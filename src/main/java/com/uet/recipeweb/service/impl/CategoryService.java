@@ -19,6 +19,7 @@ import com.uet.recipeweb.repository.CategoryRepository;
 import com.uet.recipeweb.repository.LoginInfoRepository;
 import com.uet.recipeweb.service.ICategoryService;
 import com.uet.recipeweb.util.AwsUtils;
+import com.uet.recipeweb.util.MapperUtils;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -27,6 +28,9 @@ public class CategoryService implements ICategoryService {
 	
 	@Autowired
 	AwsUtils awsUtils;
+	
+	@Autowired
+	MapperUtils mapperUtils;
 	
 	@Autowired
 	CategoryGroupRepository categoryGroupRepository;
@@ -69,15 +73,7 @@ public class CategoryService implements ICategoryService {
 			}
 		}
 		
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
@@ -96,15 +92,7 @@ public class CategoryService implements ICategoryService {
 			}
 		}
 		
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 	
 }

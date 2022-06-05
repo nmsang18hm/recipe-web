@@ -20,6 +20,7 @@ import com.uet.recipeweb.repository.RecipeRepository;
 import com.uet.recipeweb.repository.UserRepository;
 import com.uet.recipeweb.service.ICollectionService;
 import com.uet.recipeweb.util.AwsUtils;
+import com.uet.recipeweb.util.MapperUtils;
 
 @Service
 public class CollectionService implements ICollectionService {
@@ -28,6 +29,9 @@ public class CollectionService implements ICollectionService {
 	
 	@Autowired
 	AwsUtils awsUtils;
+	
+	@Autowired
+	MapperUtils mapperUtils;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -88,21 +92,7 @@ public class CollectionService implements ICollectionService {
 				}
 			}
 		}
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : collectionEntities) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(userId);
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
 
 	@Override
@@ -181,21 +171,7 @@ public class CollectionService implements ICollectionService {
 	@Override
 	public List<CollectionDTO> findAllSavedCollection(Long userId) {
 		List<CollectionEntity> collectionEntities = userRepository.getById(userId).getSavedCollections();
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : collectionEntities) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(collectionEntity.getOwner().getId());
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
 
 	@Override
@@ -210,61 +186,19 @@ public class CollectionService implements ICollectionService {
 		keyword = keyword.replaceAll("\\s","*");
 		keyword = "*" + keyword + "*";
 		List<CollectionEntity> collectionEntities = collectionRepository.search(keyword);
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : collectionEntities) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(collectionEntity.getOwner().getId());
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
 
 	@Override
 	public List<CollectionDTO> findTop10ByLikeMonth() {
 		List<CollectionEntity> collectionEntities = collectionRepository.findTop10ByLikeMonth();
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : collectionEntities) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(collectionEntity.getOwner().getId());
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
 
 	@Override
 	public List<CollectionDTO> findTop10New() {
 		List<CollectionEntity> collectionEntities = collectionRepository.findTop10New();
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : collectionEntities) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(collectionEntity.getOwner().getId());
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
 
 	@Override
@@ -293,21 +227,7 @@ public class CollectionService implements ICollectionService {
 			result = collectionEntities;
 		}
 		
-		List<CollectionDTO> collectionDTOs = new ArrayList<>();
-		for (CollectionEntity collectionEntity : result) {
-			CollectionDTO collectionDTO = modelMapper.map(collectionEntity, CollectionDTO.class);
-			collectionDTO.setUserId(collectionEntity.getOwner().getId());
-			collectionEntity.getRecipeEntities().forEach(recipe -> {
-				collectionDTO.getRecipeIds().add(recipe.getId());
-			});
-			collectionDTO.setTotalLikes(collectionEntity.getUserSaveEntities().size());
-			collectionDTO.setUserName(loginInfoRepository.getById(collectionDTO.getUserId()).getUserName());
-			if (collectionEntity.getRecipeEntities().size() > 0) {
-				collectionDTO.setImageUrl(awsUtils.generateLink(collectionEntity.getRecipeEntities().get(0).getMain_image_url()));
-			}
-			collectionDTOs.add(collectionDTO);
-		}
-		return collectionDTOs;
+		return mapperUtils.mapCollectionEntityListToDTO(result);
 	}
 
 	@Override

@@ -1,34 +1,26 @@
 package com.uet.recipeweb.service.impl;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.uet.recipeweb.dto.RecipeDTO;
 import com.uet.recipeweb.entity.RecipeEntity;
 import com.uet.recipeweb.repository.IngredientRepository;
-import com.uet.recipeweb.repository.LoginInfoRepository;
 import com.uet.recipeweb.repository.RecipeRepository;
 import com.uet.recipeweb.service.IRecipeService;
-import com.uet.recipeweb.util.AwsUtils;
+import com.uet.recipeweb.util.MapperUtils;
 
 @Service
 public class RecipeService implements IRecipeService {
-	@Autowired
-	ModelMapper modelMapper;
 	
 	@Autowired
-	AwsUtils awsUtils;
+	MapperUtils mapperUtils;
 	
 	@Autowired
 	RecipeRepository recipeRepository;
-	
-	@Autowired
-	LoginInfoRepository loginInfoRepository;
 	
 	@Autowired
 	IngredientRepository ingredientRepository;
@@ -45,86 +37,38 @@ public class RecipeService implements IRecipeService {
 		keyword = keyword.replaceAll("\\s","*");
 		keyword = "*" + keyword + "*";
 		List<RecipeEntity> recipeEntities = recipeRepository.search(keyword);
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
 	public List<RecipeDTO> findTop10ByViewWeek() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findTop10ByViewWeek();
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
 	public List<RecipeDTO> findTop10ByLikeWeek() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findTop10ByLikeWeek();
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
 	public List<RecipeDTO> findTop10ByViewMonth() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findTop10ByViewMonth();
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
 	public List<RecipeDTO> findTop10ByLikeMonth() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findTop10ByLikeMonth();
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 
 	}
 
 	@Override
 	public List<RecipeDTO> findTop10New() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findTop10New();
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 
 	@Override
@@ -149,28 +93,12 @@ public class RecipeService implements IRecipeService {
 			}
 		}
 		
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : resultEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(resultEntities);
 	}
 
 	@Override
 	public List<RecipeDTO> findAllByIsAllowedFalse() {
 		List<RecipeEntity> recipeEntities = recipeRepository.findAllByIsAllowed((short) 0);
-		List<RecipeDTO> recipeDTOs = new ArrayList<>();
-		for (RecipeEntity recipeEntity : recipeEntities) {
-			RecipeDTO recipeDTO = modelMapper.map(recipeEntity, RecipeDTO.class);
-			recipeDTO.setUser_name(loginInfoRepository.getById(recipeEntity.getOwner_id()).getUserName());
-			recipeDTO.setMain_image_url(awsUtils.generateLink(recipeDTO.getMain_image_url()));
-			recipeDTO.setTotal_likes(recipeEntity.getUserLikeEntities().size());
-			recipeDTOs.add(recipeDTO);
-		}
-		return recipeDTOs;
+		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}
 }

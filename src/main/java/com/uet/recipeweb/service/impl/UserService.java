@@ -36,7 +36,9 @@ public class UserService implements IUserService {
 		List<LoginInfoEntity> loginInfoEntities = loginInfoRepository.findAllByUserNameContaining(keyword);
 		List<LoginInfoDTO> loginInfoDTOs = new ArrayList<>();
 		for (LoginInfoEntity loginInfoEntity : loginInfoEntities) {
-			loginInfoDTOs.add(modelMapper.map(loginInfoEntity, LoginInfoDTO.class));
+			LoginInfoDTO loginInfoDTO = modelMapper.map(loginInfoEntity, LoginInfoDTO.class);
+			loginInfoDTO.setFullName(userRepository.getById(loginInfoEntity.getId()).getFullName());
+			loginInfoDTOs.add(loginInfoDTO);
 		}
 		return loginInfoDTOs;
 	}

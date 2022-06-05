@@ -22,7 +22,6 @@ public class UserAPI {
 	@GetMapping("/admin/users/search")
 	@PreAuthorize("hasAuthority('admin')")
 	public List<LoginInfoDTO> searchUser(String keyword) {
-		System.out.println(keyword);
 		return userService.findAllByUserNameContaining(keyword);
 	}
 	

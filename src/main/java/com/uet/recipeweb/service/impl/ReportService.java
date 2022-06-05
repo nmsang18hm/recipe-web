@@ -75,27 +75,13 @@ public class ReportService implements IReportService {
 	@Override
 	public List<ReportRecipeDTO> findAllReportRecipeByStatusFalse() {
 		List<ReportRecipeEntity> reportRecipeEntities = reportRecipeRepository.findAllByStatus((short) 0);
-		List<ReportRecipeDTO> reportRecipeDTOs = new ArrayList<>();
-		for (ReportRecipeEntity reportRecipeEntity : reportRecipeEntities) {
-			ReportRecipeDTO reportRecipeDTO = modelMapper.map(reportRecipeEntity, ReportRecipeDTO.class);
-			reportRecipeDTO.setUserId(reportRecipeEntity.getUserReportRecipe().getId());
-			reportRecipeDTO.setRecipeId(reportRecipeEntity.getReportedRecipe().getId());
-			reportRecipeDTOs.add(reportRecipeDTO);
-		}
-		return reportRecipeDTOs;
+		return mapRecipeReportEntityListToDTO(reportRecipeEntities);
 	}
 
 	@Override
 	public List<ReportRecipeDTO> findAllReportRecipeByUserId(Long userId) {
 		List<ReportRecipeEntity> reportRecipeEntities  = userRepository.getById(userId).getReportRecipeEntities();
-		List<ReportRecipeDTO> reportRecipeDTOs = new ArrayList<>();
-		for (ReportRecipeEntity reportRecipeEntity : reportRecipeEntities) {
-			ReportRecipeDTO reportRecipeDTO = modelMapper.map(reportRecipeEntity, ReportRecipeDTO.class);
-			reportRecipeDTO.setUserId(reportRecipeEntity.getUserReportRecipe().getId());
-			reportRecipeDTO.setRecipeId(reportRecipeEntity.getReportedRecipe().getId());
-			reportRecipeDTOs.add(reportRecipeDTO);
-		}
-		return reportRecipeDTOs;
+		return mapRecipeReportEntityListToDTO(reportRecipeEntities);
 	}
 
 	@Override
@@ -115,37 +101,22 @@ public class ReportService implements IReportService {
 		reportCommentEntity = reportCommentRepository.save(reportCommentEntity);
 		ReportCommentDTO result = modelMapper.map(reportCommentEntity, ReportCommentDTO.class);
 		result.setUserId(reportCommentEntity.getUserReportComment().getId());
+		CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
+		result.setRecipeId(commentEntity.getRecipeId());
+		result.setCommentContent(commentEntity.getContent());
 		return result;
 	}
 
 	@Override
 	public List<ReportCommentDTO> findAllReportCommentByStatusFalse() {
 		List<ReportCommentEntity> reportCommentEntities = reportCommentRepository.findAllByStatus((short) 0);
-		List<ReportCommentDTO> reportCommentDTOs = new ArrayList<>();
-		for (ReportCommentEntity reportCommentEntity : reportCommentEntities) {
-			ReportCommentDTO reportCommentDTO = modelMapper.map(reportCommentEntity, ReportCommentDTO.class);
-			reportCommentDTO.setUserId(reportCommentEntity.getUserReportComment().getId());
-			CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
-			reportCommentDTO.setRecipeId(commentEntity.getRecipeId());
-			reportCommentDTO.setCommentContent(commentEntity.getContent());
-			reportCommentDTOs.add(reportCommentDTO);
-		}
-		return reportCommentDTOs;
+		return mapCommentReportEntityListToDTO(reportCommentEntities);
 	}
 
 	@Override
 	public List<ReportCommentDTO> findAllReportCommentByUserId(Long userId) {
 		List<ReportCommentEntity> reportCommentEntities = userRepository.getById(userId).getReportCommentEntities();
-		List<ReportCommentDTO> reportCommentDTOs = new ArrayList<>();
-		for (ReportCommentEntity reportCommentEntity : reportCommentEntities) {
-			ReportCommentDTO reportCommentDTO = modelMapper.map(reportCommentEntity, ReportCommentDTO.class);
-			reportCommentDTO.setUserId(reportCommentEntity.getUserReportComment().getId());
-			CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
-			reportCommentDTO.setRecipeId(commentEntity.getRecipeId());
-			reportCommentDTO.setCommentContent(commentEntity.getContent());
-			reportCommentDTOs.add(reportCommentDTO);
-		}
-		return reportCommentDTOs;
+		return mapCommentReportEntityListToDTO(reportCommentEntities);
 	}
 
 	@Override
@@ -176,6 +147,16 @@ public class ReportService implements IReportService {
 	@Override
 	public List<ReportUserDTO> findAllReportUserByStatusFalse() {
 		List<ReportUserEntity> reportUserEntities = reportUserRepository.findAllByStatus((short) 0);
+		return mapUserReportEntityListToDTO(reportUserEntities);
+	}
+
+	@Override
+	public List<ReportUserDTO> findAllReportUserByUserId(Long userId) {
+		List<ReportUserEntity> reportUserEntities = userRepository.getById(userId).getReportUserEntities();
+		return mapUserReportEntityListToDTO(reportUserEntities);
+	}
+	
+	private List<ReportUserDTO> mapUserReportEntityListToDTO(List<ReportUserEntity> reportUserEntities) {
 		List<ReportUserDTO> reportUserDTOs = new ArrayList<>();
 		for (ReportUserEntity reportUserEntity : reportUserEntities) {
 			ReportUserDTO reportUserDTO = modelMapper.map(reportUserEntity, ReportUserDTO.class);
@@ -185,17 +166,28 @@ public class ReportService implements IReportService {
 		}
 		return reportUserDTOs;
 	}
-
-	@Override
-	public List<ReportUserDTO> findAllReportUserByUserId(Long userId) {
-		List<ReportUserEntity> reportUserEntities = userRepository.getById(userId).getReportUserEntities();
-		List<ReportUserDTO> reportUserDTOs = new ArrayList<>();
-		for (ReportUserEntity reportUserEntity : reportUserEntities) {
-			ReportUserDTO reportUserDTO = modelMapper.map(reportUserEntity, ReportUserDTO.class);
-			reportUserDTO.setReportUserId(reportUserEntity.getReportUser().getId());
-			reportUserDTO.setReportedUserId(reportUserEntity.getReportedUser().getId());
-			reportUserDTOs.add(reportUserDTO);
+	
+	private List<ReportCommentDTO> mapCommentReportEntityListToDTO(List<ReportCommentEntity> reportCommentEntities) {
+		List<ReportCommentDTO> reportCommentDTOs = new ArrayList<>();
+		for (ReportCommentEntity reportCommentEntity : reportCommentEntities) {
+			ReportCommentDTO reportCommentDTO = modelMapper.map(reportCommentEntity, ReportCommentDTO.class);
+			reportCommentDTO.setUserId(reportCommentEntity.getUserReportComment().getId());
+			CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
+			reportCommentDTO.setRecipeId(commentEntity.getRecipeId());
+			reportCommentDTO.setCommentContent(commentEntity.getContent());
+			reportCommentDTOs.add(reportCommentDTO);
 		}
-		return reportUserDTOs;
+		return reportCommentDTOs;
+	}
+	
+	private List<ReportRecipeDTO> mapRecipeReportEntityListToDTO(List<ReportRecipeEntity> reportRecipeEntities) {
+		List<ReportRecipeDTO> reportRecipeDTOs = new ArrayList<>();
+		for (ReportRecipeEntity reportRecipeEntity : reportRecipeEntities) {
+			ReportRecipeDTO reportRecipeDTO = modelMapper.map(reportRecipeEntity, ReportRecipeDTO.class);
+			reportRecipeDTO.setUserId(reportRecipeEntity.getUserReportRecipe().getId());
+			reportRecipeDTO.setRecipeId(reportRecipeEntity.getReportedRecipe().getId());
+			reportRecipeDTOs.add(reportRecipeDTO);
+		}
+		return reportRecipeDTOs;
 	}
 }

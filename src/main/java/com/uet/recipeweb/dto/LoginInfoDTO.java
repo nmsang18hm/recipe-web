@@ -4,6 +4,7 @@ public class LoginInfoDTO {
 	private Long id;
 	private String userName;
 	private Short status;
+	private String fullName;
 
 	public Long getId() {
 		return id;
@@ -27,5 +28,13 @@ public class LoginInfoDTO {
 
 	public void setStatus(Short status) {
 		this.status = status;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }

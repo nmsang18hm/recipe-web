@@ -2,6 +2,7 @@ package com.uet.recipeweb.dto;
 
 public class ReportCommentDTO extends AbstractReportDTO {
 	private Long userId;
+	private String userName;
 	private Long commentId;
 	private String commentContent;
 	private Long recipeId;
@@ -36,5 +37,13 @@ public class ReportCommentDTO extends AbstractReportDTO {
 
 	public void setRecipeId(Long recipeId) {
 		this.recipeId = recipeId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

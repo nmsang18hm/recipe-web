@@ -17,6 +17,7 @@ import com.uet.recipeweb.entity.ReportRecipeEntity;
 import com.uet.recipeweb.entity.ReportUserEntity;
 import com.uet.recipeweb.entity.UserEntity;
 import com.uet.recipeweb.repository.CommentRepository;
+import com.uet.recipeweb.repository.LoginInfoRepository;
 import com.uet.recipeweb.repository.RecipeRepository;
 import com.uet.recipeweb.repository.ReportCommentRepository;
 import com.uet.recipeweb.repository.ReportRecipeRepository;
@@ -40,6 +41,9 @@ public class ReportService implements IReportService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	LoginInfoRepository loginInfoRepository;
 	
 	@Autowired
 	RecipeRepository recipeRepository;
@@ -104,6 +108,7 @@ public class ReportService implements IReportService {
 		CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
 		result.setRecipeId(commentEntity.getRecipeId());
 		result.setCommentContent(commentEntity.getContent());
+		result.setUserName(loginInfoRepository.getById(result.getUserId()).getUserName());
 		return result;
 	}
 
@@ -175,6 +180,7 @@ public class ReportService implements IReportService {
 			CommentEntity commentEntity = commentRepository.getById(reportCommentEntity.getCommentId());
 			reportCommentDTO.setRecipeId(commentEntity.getRecipeId());
 			reportCommentDTO.setCommentContent(commentEntity.getContent());
+			reportCommentDTO.setUserName(loginInfoRepository.getById(reportCommentDTO.getUserId()).getUserName());
 			reportCommentDTOs.add(reportCommentDTO);
 		}
 		return reportCommentDTOs;

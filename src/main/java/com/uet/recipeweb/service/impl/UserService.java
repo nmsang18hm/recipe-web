@@ -33,7 +33,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public List<LoginInfoDTO> findAllByUserNameContaining(String keyword) {
-		List<LoginInfoEntity> loginInfoEntities = loginInfoRepository.findAllByUserNameContaining(keyword);
+		List<LoginInfoEntity> loginInfoEntities = loginInfoRepository.findByUserNameContaining(keyword);
 		List<LoginInfoDTO> loginInfoDTOs = new ArrayList<>();
 		for (LoginInfoEntity loginInfoEntity : loginInfoEntities) {
 			LoginInfoDTO loginInfoDTO = modelMapper.map(loginInfoEntity, LoginInfoDTO.class);

@@ -34,8 +34,8 @@ public class RecipeService implements IRecipeService {
 
 	@Override
 	public List<RecipeDTO> search(String keyword) {
-		keyword = keyword.replaceAll("\\s","*");
-		keyword = "*" + keyword + "*";
+		//keyword = keyword.replaceAll("\\s","*");
+		//keyword = "*" + keyword + "*";
 		List<RecipeEntity> recipeEntities = recipeRepository.search(keyword);
 		return mapperUtils.mapRecipeEntityListToDTO(recipeEntities);
 	}

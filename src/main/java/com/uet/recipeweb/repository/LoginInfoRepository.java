@@ -8,5 +8,5 @@ import com.uet.recipeweb.entity.LoginInfoEntity;
 
 public interface LoginInfoRepository extends JpaRepository<LoginInfoEntity, Long> {
 	public LoginInfoEntity findOneByUserName(String userName);
-	public List<LoginInfoEntity> findAllByUserNameContaining(String keyword);
+	public List<LoginInfoEntity> findByUserNameContaining(String keyword);
 }

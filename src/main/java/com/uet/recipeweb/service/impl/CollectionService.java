@@ -183,8 +183,8 @@ public class CollectionService implements ICollectionService {
 
 	@Override
 	public List<CollectionDTO> search(String keyword) {
-		keyword = keyword.replaceAll("\\s","*");
-		keyword = "*" + keyword + "*";
+		//keyword = keyword.replaceAll("\\s","*");
+		//keyword = "*" + keyword + "*";
 		List<CollectionEntity> collectionEntities = collectionRepository.search(keyword);
 		return mapperUtils.mapCollectionEntityListToDTO(collectionEntities);
 	}
@@ -218,6 +218,15 @@ public class CollectionService implements ICollectionService {
 			}
 			
 		});
+		
+		Iterator<CollectionEntity> iterator = collectionEntities.iterator();
+		while (iterator.hasNext()) {
+			CollectionEntity collectionEntity = iterator.next();
+			if (collectionEntity.getIsPublic() == 0) {
+				iterator.remove();
+			}
+		}
+		
 		List<CollectionEntity> result = new ArrayList<>();
 		if (limit < collectionEntities.size()) {
 			for (int i = 0; i < limit; i++) {
